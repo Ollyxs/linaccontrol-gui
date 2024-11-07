@@ -66,7 +66,9 @@ def login():
             )
             login_user(user)
             req = make_response(redirect(url_for("main.index")))
-            req.set_cookie("access_token", user_data["access_token"], httponly=True)
+            req.set_cookie(
+                "access_token", user_data["access_token"], httponly=True, samesite="Lax"
+            )
             return req
         else:
             flash("Usuario o contraseña incorrectos", "danger")

@@ -6,6 +6,9 @@
     <div class="col-md-10 col-sm-6">
       <h3 class="text-center">Aceleradores Lineares</h3>
     </div>
+    <div class="text-center mb-4">
+      <a href="{{ url_for('results.view_results') }}" class="btn btn-primary">Ver Resultados de los Test</a>
+    </div>
   </div>
   <div class="row justify-content-center">
     {% for linac in linacs %}

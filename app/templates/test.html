@@ -1,22 +1,23 @@
-{% extends "main.html" %} {% block content %}
+{% extends "main.html" %}
+{% block content %}
 <div class="container">
-  <h2 class="text-center mb-4">
-    Formulario para el control DIARIO del Acelerador Lineal
-  </h2>
+  <h2 class="text-center mb-4">Formulario para el control DIARIO del Acelerador Lineal</h2>
 
   <div class="row mb-4">
     <div class="col-6">
       <p class="font-weight-bold">Acelerador Lineal: {{ linac.name }}</p>
     </div>
     <div class="col-6 text-end">
-      <p class="font-weight-bold">
-        Fecha: {{ current_date.strftime('%d/%m/%Y') }}
-      </p>
+      <p class="font-weight-bold">Fecha: {{ current_date.strftime('%d/%m/%Y') }}</p>
     </div>
   </div>
 
-  <form id="dailyControlForm" method="POST">
-    {{ csrf_token() }}
+  <form method="POST" action="{{ url_for('test.test_suite_submit') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="linac_uid" value="{{ linac.uid }}">
+    <input type="hidden" name="test_suite_uid" value="{{ test_suite.uid }}">
+    <input type="hidden" name="frequency" value="{{ frequency }}">
+    <input type="hidden" name="created_at" value="{{ current_date.strftime('%Y-%m-%d') }}">
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -25,53 +26,36 @@
         </tr>
       </thead>
       <tbody>
-        {% set categories = ['seguridad', 'sistema de para de emergencia',
-        'mecánicos'] %} {% for category in categories %}
+        {% set categories = ['seguridad', 'sistema de para de emergencia', 'mecánicos'] %}
+        {% for category in categories %}
         <tr class="table-secondary">
           <td colspan="2"><strong>{{ category|capitalize }}</strong></td>
         </tr>
-        {% for test in test_suite_tests %} {% if test.category == category %}
+        {% for test in test_suite_tests %}
+        {% if test.category == category %}
         <tr>
           <td>{{ test.test_name }}</td>
           <td>
             <div class="form-check">
-              <input
-                class="form-check-input test-checkbox"
-                type="checkbox"
-                id="{{ test.uid }}"
-                name="{{ test.uid }}"
-              />
+              <input class="form-check-input" type="checkbox" id="{{ test.uid }}" name="test_results_data[{{ test.uid }}]" value="pass">
             </div>
           </td>
         </tr>
-        {% endif %} {% endfor %} {% endfor %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
       </tbody>
     </table>
 
-    <div class="mb-3 text-center">
+    <div class="mb-3">
       <label for="observations" class="form-label">Observaciones:</label>
-      <textarea
-        class="form-control"
-        id="observations"
-        name="observations"
-        rows="3"
-        required
-      ></textarea>
+      <textarea class="form-control" id="observations" name="observations" rows="3" required></textarea>
     </div>
 
     <div class="text-center mb-3">
-      <p>
-        (a) En todos los casos colocar ✓ (satisfactorio) cuando todo funciona
-        correctamente o está en tolerancia, y una ✗ cuando no.
-      </p>
-      <p>
-        (b) El físico revisará semanalmente, o cuando se reporten problemas.
-      </p>
-      <p>
-        Nota: En caso de no funcionamiento de algún sistema o de que alguna
-        variable esté fuera de tolerancia se debe avisar a Física de forma
-        inmediata.
-      </p>
+      <p>(a) En todos los casos colocar ✓ (satisfactorio) cuando todo funciona correctamente o está en tolerancia, y una ✗ cuando no.</p>
+      <p>(b) El físico revisará semanalmente, o cuando se reporten problemas.</p>
+      <p>Nota: En caso de no funcionamiento de algún sistema o de que alguna variable esté fuera de tolerancia se debe avisar a Física de forma inmediata.</p>
     </div>
 
     <div class="text-center">
@@ -80,126 +64,5 @@
   </form>
   <br />
 </div>
-
-<style>
-  .form-check-input:not(:checked) + .form-check-label .pass {
-    display: none;
-  }
-  .form-check-input:checked + .form-check-label .fail {
-    display: none;
-  }
-</style>
-
-<meta name="csrf-token" content="{{ csrf_token() }}" />
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("dailyControlForm");
-    const observationsField = document.getElementById("observations");
-    const checkboxes = document.querySelectorAll(".test-checkbox");
-
-    // Función para actualizar el estado de las observaciones como requeridas
-    function updateObservationsRequirement() {
-      const allPassed = Array.from(checkboxes).every(
-        (checkbox) => checkbox.checked
-      );
-      observationsField.required = !allPassed;
-    }
-
-    // Verifica el estado de los checkboxes para las observaciones
-    checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", updateObservationsRequirement);
-    });
-
-    // Interceptamos el submit del formulario
-    form.addEventListener("submit", function (event) {
-      event.preventDefault(); // Evita el envío normal del formulario
-
-      // Recogemos los datos del formulario
-      const linacUid = "{{ linac.uid }}"; // Desde el template
-      const testSuiteUid = "{{ test_suite.uid }}"; // Desde el template
-      const testResultsData = [];
-
-      checkboxes.forEach((checkbox) => {
-        const testUid = checkbox.getAttribute('id');
-        const result = checkbox.checked ? "pass" : "failed"; // Puedes ajustar este resultado según lo que requieras
-        testResultsData.push({
-          test_uid: testUid,
-          result: result,
-        });
-      });
-
-      // Crear el JSON en el formato requerido
-      const requestData = {
-        result_data: {
-          linac_uid: linacUid,
-          test_suite_uid: testSuiteUid,
-          result: observationsField.value, // Esto puede depender de las observaciones o el estado general
-        },
-        test_results_data: testResultsData
-      };
-      console.log(JSON.stringify(requestData));
-
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      
-      // Envía el JSON a la API usando fetch
-      fetch("{{ url_for('test.test_suite_submit') }}", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken, // Token CSRF
-          "Authorization": "Bearer " + getCookie("access_token") // Token JWT de la cookie
-        },
-        body: JSON.stringify(requestData)
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error("Error en el envío de los resultados");
-        })
-        .then((data) => {
-          console.log("Respuesta del servidor:", data);
-          // Aquí puedes redirigir o mostrar un mensaje de éxito
-          window.location.href = "{{ url_for('main.index') }}";
-          alert("Resultados enviados correctamente.");
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    });
-
-    // Función para obtener cookies por su nombre
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-  });
-  <!-- document.addEventListener("DOMContentLoaded", function () { -->
-  <!--   const form = document.getElementById("dailyControlForm"); -->
-  <!--   const observationsField = document.getElementById("observations"); -->
-  <!--   const checkboxes = document.querySelectorAll(".test-checkbox"); -->
-  <!---->
-  <!--   function updateObservationsRequirement() { -->
-  <!--     const allPassed = Array.from(checkboxes).every( -->
-  <!--       (checkbox) => checkbox.checked, -->
-  <!--     ); -->
-  <!--     observationsField.required = !allPassed; -->
-  <!--   } -->
-  <!---->
-  <!--   checkboxes.forEach((checkbox) => { -->
-  <!--     checkbox.addEventListener("change", updateObservationsRequirement); -->
-  <!--   }); -->
-  <!---->
-  <!--   form.addEventListener("submit", function (event) { -->
-  <!--     updateObservationsRequirement(); -->
-  <!--     if (!form.checkValidity()) { -->
-  <!--       event.preventDefault(); -->
-  <!--       event.stopPropagation(); -->
-  <!--     } -->
-  <!--     form.classList.add("was-validated"); -->
-  <!--   }); -->
-  <!-- }); -->
-</script>
 {% endblock %}
+

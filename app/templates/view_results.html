@@ -1,0 +1,38 @@
+{% extends "main.html" %} {% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Resultados de los Test</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Acelerador</th>
+        <th>Resultado</th>
+        <th>Realizado por</th>
+        <th>Revisado por</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in results %}
+      <tr class="{% if not result.reviewed_by_name %}table-warning{% endif %}">
+        <td>{{ result.created_at }}</td>
+        <td>{{ result.linac_name }}</td>
+        <td>{{ result.result }}</td>
+        <td>{{ result.realized_by_name }}</td>
+        <td>
+          {{ result.reviewed_by_name if result.reviewed_by_name else "No
+          revisado" }}
+        </td>
+        <td>
+          <a
+            href="{{ url_for('results.view_result_details', result_uid=result.uid) }}"
+            class="btn btn-primary btn-sm"
+            >Ver Detalles</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

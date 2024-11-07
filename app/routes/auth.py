@@ -50,10 +50,12 @@ def load_user(request):
             )
             # Devolver usuario logueado con los datos cargados
             return user
+        except jwt.exceptions.ExpiredSignatureError:
+            flash(
+                "El token ha expirado. Por favor inicie sesión nuevamente.", "warning"
+            )
         except jwt.exceptions.InvalidTokenError:
-            print("Invalid Token.")
-        except jwt.exceptions.DecodeError:
-            print("DecodeError.")
+            flash("Token inválido. Por favor inicie sesión nuevamente.", "warning")
     return None
 
 
