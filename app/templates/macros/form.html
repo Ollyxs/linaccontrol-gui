@@ -1,0 +1,21 @@
+{% macro MostrarCampo(Campo) %}
+{{Campo.label}}
+{{Campo(**kwargs)}}
+{{MostrarError(Campo)}}
+{% endmacro %}
+
+{% macro MostrarEnvio(Campo) %}
+{{Campo(**kwargs)|safe}}
+{% endmacro %}
+
+{% macro MostrarError(Campo) %}
+{% if Campo.errors %}
+{% for error in Campo.errors %}
+<span style="color:red">{{error}}</span><br/>
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+{# % macro csrf_token() %}
+<!-- <input type="hidden" name="csrf_token" value="{{csrf_token()}}"> -->
+{% endmacro % #}

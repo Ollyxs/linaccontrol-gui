@@ -1,0 +1,97 @@
+{% extends 'main.html' %} 
+{% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <!-- Tabla de linacs y botón de crear -->
+    <div class="col-md-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Administración de Aceleradores</h2>
+        <a href="{{ url_for('admin.create_linac') }}" class="btn btn-primary"
+          >Crear Acelerador</a
+        >
+      </div>
+    <!-- Botones de filtro -->
+    <div class="col-md-3 mt-auto">
+      <div class="btn-group">
+        <a
+          href="{{ url_for('admin.dashboard', filter=None) }}"
+          class="btn btn-outline-secondary {% if filter == 'None' %}active{% endif %}"
+          >Todos</a
+        >
+        <a
+          href="{{ url_for('admin.dashboard', filter=True) }}"
+          class="btn btn-outline-secondary {% if filter == 'active' %}active{% endif %}"
+          >Activos</a
+        >
+        <a
+          href="{{ url_for('admin.dashboard', filter=False) }}"
+          class="btn btn-outline-secondary {% if filter == 'inactive' %}active{% endif %}"
+          >Inactivos</a
+        >
+      </div>
+    </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for linac in linacs %}
+          <tr>
+            <td>{{ linac.name }}</td>
+            <td>Fuesmen SR{#{ linac.location }#}</td>
+            <td>{{ 'Activo' if linac.is_active else 'Inactivo' }}</td>
+            <td>
+              <a
+                href="{{ url_for('admin.get_linac', linac_uid=linac.uid) }}"
+                class="btn btn-sm btn-info btn-custom"
+                >Ver</a
+              >
+              <a
+                href="{{ url_for('admin.update_linac', linac_uid=linac.uid) }}"
+                class="btn btn-sm btn-warning btn-custom"
+                >Editar</a
+              >
+              {% if linac.is_active %}
+              <a
+                href="{{ url_for('admin.deactivate_linac', linac_uid=linac.uid) }}"
+                class="btn btn-sm btn-secondary btn-custom"
+                >Desactivar</a
+              >
+              {% else %}
+              <a
+                href="{{ url_for('admin.activate_linac', linac_uid=linac.uid) }}"
+                class="btn btn-sm btn-success btn-custom"
+                >Activar</a
+              >
+              {% endif %}
+              <a
+                href="{{ url_for('admin.delete_linac', linac_uid=linac.uid) }}"
+                class="btn btn-sm btn-danger btn-custom"
+                onclick="return confirm('¿Estás seguro de que quieres eliminar este linac?')"
+                >Eliminar</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+.btn-custom {
+  --bs-btn-padding-y: .25rem;
+  --bs-btn-padding-x: .5rem;
+  --bs-btn-font-size: .75rem;
+  min-width: 80px;
+  text-align: center;
+}
+</style>
+{% endblock %}

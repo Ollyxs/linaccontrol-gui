@@ -1,0 +1,26 @@
+{% extends "main.html" %}
+{% from "macros/form.html" import MostrarCampo, MostrarEnvio %}
+{% block content %}
+<div class="row">
+        <div class="col-md-4 col-sm-1"></div>
+        <div class="col-md-4 col-sm-1 border border-1">
+          <div style="padding: 30px">
+            <h3>Ingresar</h3>
+            <form method="POST" action="{{url_for('main.login')}}">
+              <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+              <div class="mb-3">
+                {{MostrarCampo(formulario.username, class="form-control")}}
+              </div>
+              <div class="mb-3">
+                {{MostrarCampo(formulario.password, class="form-control")}}
+              </div>
+              <div class="d-grid gap-2">
+                {{MostrarEnvio(formulario.submit, class="btn btn-primary")}}
+              </div>
+              </br>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-1"></div>
+      </div>
+{% endblock %}

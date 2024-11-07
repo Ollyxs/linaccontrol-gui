@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% from "macros/form.html" import MostrarCampo, MostrarEnvio %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-4 col-sm-1">
+      <h2 class="text-center">Crear Acelerador</h2>
+      <form action="{{ url_for('admin.create_linac') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <div class="form-group">
+          {{ MostrarCampo(form.name, class="form-control") }}
+                 
+        </div>
+        <div class="text-center mt-3">
+          {{ MostrarEnvio(form.submit, class="btn btn-primary")}}
+        </div>
+      </form>
+      <div class="text-center mt-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

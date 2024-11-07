@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% import 'macros/linacs.html' as macro %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-sm-6">
+      <h3 class="text-center">Aceleradores Lineares</h3>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    {% for linac in linacs %}
+      <div class="col-md-4 col-sm-6 d-flex justify-content-center mb-4">       
+        {{ macro.card_linacs(linac, current_user) }}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="row justify-content-between mt-4">
+    <div class="col-md-6 text-start">
+      {% if skip > 0 %}
+        <a href="{{ url_for('main.index', skip=skip-limit, limit=limit) }}" class="btn btn-primary">Anterior</a>
+      {% endif %}
+    </div>
+    <div class="col-md-6 text-end">
+      {% if linacs|length == limit %}
+        <a href="{{ url_for('main.index', skip=skip+limit, limit=limit) }}" class="btn btn-primary">Siguiente</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

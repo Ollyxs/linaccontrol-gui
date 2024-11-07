@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-4">
+      <img src="https://via.placeholder.com/100x100" class="img-fluid">
+    </div>
+    <div class="col-md-8">
+      <h2>{{ linac.name }}</h2>
+      <p><strong>Ubicación:</strong> Lugar {#{ accelerator.location }#}</p>
+      <p<><strong>Estado:</strong> {{ 'Activo' if linac.is_active else 'Inactivo' }}</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- <div class="row mt-4"> -->
+  <!--   <div class="col-12"> -->
+  <!--     <h3>Test Suites Asignados</h3> -->
+  <!--     <table class="table table-striped"> -->
+  <!--       <thead> -->
+  <!--         <tr> -->
+  <!--           <th>Nombre del Test Suite</th> -->
+  <!--           <th>Frecuencia</th> -->
+  <!--           <th>Acciones</th> -->
+  <!--         </tr> -->
+  <!--       </thead> -->
+  <!--       <tbody> -->
+  <!--         {#% for test_suite in accelerator.test_suites %#} -->
+  <!--         <tr> -->
+  <!--           <td>{#{ test_suite.name }#}</td> -->
+  <!--           <td>{#{ test_suite.frequency }#}</td> -->
+  <!--           <td> -->
+  <!--             <a href="{#{ url_for('test_suite_details', test_suite_id=test_suite.id) }#}" class="btn btn-primary btn-sm">Ver</a> -->
+  <!--           </td> -->
+  <!--         </tr> -->
+  <!--         {#% endfor %#} -->
+  <!--       </tbody> -->
+  <!--     </table> -->
+  <!--   </div> -->
+  </div>
+</div>
+{% endblock %}
