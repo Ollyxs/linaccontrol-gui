@@ -11,33 +11,6 @@
       <p<><strong>Estado:</strong> {{ 'Activo' if linac.is_active else 'Inactivo' }}</p>
     </div>
   </div>
-
-  <hr>
-
-  <!-- <div class="row mt-4"> -->
-  <!--   <div class="col-12"> -->
-  <!--     <h3>Test Suites Asignados</h3> -->
-  <!--     <table class="table table-striped"> -->
-  <!--       <thead> -->
-  <!--         <tr> -->
-  <!--           <th>Nombre del Test Suite</th> -->
-  <!--           <th>Frecuencia</th> -->
-  <!--           <th>Acciones</th> -->
-  <!--         </tr> -->
-  <!--       </thead> -->
-  <!--       <tbody> -->
-  <!--         {#% for test_suite in accelerator.test_suites %#} -->
-  <!--         <tr> -->
-  <!--           <td>{#{ test_suite.name }#}</td> -->
-  <!--           <td>{#{ test_suite.frequency }#}</td> -->
-  <!--           <td> -->
-  <!--             <a href="{#{ url_for('test_suite_details', test_suite_id=test_suite.id) }#}" class="btn btn-primary btn-sm">Ver</a> -->
-  <!--           </td> -->
-  <!--         </tr> -->
-  <!--         {#% endfor %#} -->
-  <!--       </tbody> -->
-  <!--     </table> -->
-  <!--   </div> -->
   </div>
 </div>
 {% endblock %}

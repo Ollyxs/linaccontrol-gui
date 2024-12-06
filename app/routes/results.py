@@ -92,7 +92,6 @@ def view_result_details(result_uid):
     )
     if response.status_code == 200:
         result_data = json.loads(response.text)
-        print("#########\nresult_data: ", result_data, "\n#########")
 
         # Obtener el nombre del acelerador
         linac_response = requests.get(
@@ -104,7 +103,6 @@ def view_result_details(result_uid):
         )
         if linac_response.status_code == 200:
             linac_data = json.loads(linac_response.text)
-            print("#########\nlinac_data: ", linac_data, "\n#########")
             result_data["linac_name"] = linac_data["name"]
         else:
             flash("Error al cargar el nombre del acelerador.", "danger")
@@ -121,8 +119,8 @@ def view_result_details(result_uid):
             )
             if test_response.status_code == 200:
                 test_data = json.loads(test_response.text)
-                print("#########\ntest_data: ", test_data, "\n#########")
                 test_result["test_name"] = test_data["test_name"]
+                test_result["category_name"] = test_data["category_name"]
             else:
                 flash("Error al cargar el nombre de la prueba.", "danger")
                 return redirect(url_for("results.view_results"))

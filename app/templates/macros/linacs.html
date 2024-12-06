@@ -14,13 +14,13 @@
       <div class="d-grid gap-2">
         <a
           class="btn btn-primary"
-          href="{{url_for('test.test_suite', linac_uid=linac.uid, frequency='daily')}}"
+          href="{{url_for('test.test_suite', linac_uid=linac.uid, frequency='diario')}}"
           >Diario
         </a>
         {% if current_user.role != 'tecnico' %}
         <a
           class="btn btn-secondary"
-          href="{{url_for('test.test_suite', linac_uid=linac.uid, frequency='monthly')}}"
+          href="{{url_for('test.test_suite', linac_uid=linac.uid, frequency='mensual')}}"
           >Mensual
         </a>
         {% endif %}

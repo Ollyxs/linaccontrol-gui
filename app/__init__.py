@@ -34,11 +34,12 @@ def create_app():
     login_manager.login_message_category = "warning"
     # CORS(app)
 
-    from app.routes import main, admin, test, results
+    from app.routes import main, admin, test, results, users
 
     app.register_blueprint(main.main)
     app.register_blueprint(admin.admin)
     app.register_blueprint(test.test)
     app.register_blueprint(results.results)
+    app.register_blueprint(users.users)
 
     return app

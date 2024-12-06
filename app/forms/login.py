@@ -19,7 +19,7 @@ class LoginForm(FlaskForm):
         [
             validators.DataRequired(message=msg),
             validators.Length(
-                min=8, message="La contraseña debe tener al menos 6 caracteres"
+                min=6, message="La contraseña debe tener al menos 6 caracteres"
             ),
         ],
     )

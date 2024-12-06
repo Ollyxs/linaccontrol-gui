@@ -1,5 +1,5 @@
 from .. import login_manager
-from flask import request, flash, redirect, url_for, current_app
+from flask import make_response, request, flash, redirect, url_for, current_app
 from flask_login import UserMixin, LoginManager, AnonymousUserMixin, current_user
 import jwt
 from functools import wraps
@@ -56,6 +56,9 @@ def load_user(request):
             )
         except jwt.exceptions.InvalidTokenError:
             flash("Token inválido. Por favor inicie sesión nuevamente.", "warning")
+            response = make_response(redirect(url_for("main.login")))
+            response.delete_cookie("access_token")
+            return response
     return None
 
 
@@ -64,7 +67,7 @@ def load_user(request):
 def unauthorized_callback():
     flash("Debe iniciar sesión para continuar.", "warning")
     # Redireccionar a la página que contiene el formulario de login
-    return redirect(url_for("main.index"))
+    return redirect(url_for("main.login"))
 
 
 # Define la función de verificación de admin para las rutas

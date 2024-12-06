@@ -1,0 +1,33 @@
+{% extends 'main.html' %} {% block content %}
+<div class="container">
+  <h2>Detalles del Usuario</h2>
+  <div class="form-group">
+    <label>Nombre:</label>
+    <p>{{ user.first_name }}</p>
+  </div>
+  <div class="form-group">
+    <label>Apellido:</label>
+    <p>{{ user.last_name }}</p>
+  </div>
+  <div class="form-group">
+    <label>Usuario:</label>
+    <p>{{ user.username }}</p>
+  </div>
+  <div class="form-group">
+    <label>Rol:</label>
+    <p>{{ user.role }}</p>
+  </div>
+  <div class="form-group">
+    <label>Estado:</label>
+    <p>{{ 'Activo' if user.is_active else 'Inactivo' }}</p>
+  </div>
+  <a
+    href="{{ url_for('users.update_user', user_uid=user.uid) }}"
+    class="btn btn-warning"
+    >Editar</a
+  >
+  <a href="{{ url_for('users.dashboard') }}" class="btn btn-secondary"
+    >Volver</a
+  >
+</div>
+{% endblock %}

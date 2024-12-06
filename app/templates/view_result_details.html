@@ -1,69 +1,78 @@
-{% extends "main.html" %} {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Detalles del Resultado</h2>
-  <div class="row mb-4">
-    <div class="col-6">
-      <p><strong>Acelerador Lineal:</strong> {{ result.linac_name }}</p>
-    </div>
-    <div class="col-6 text-end">
-      <p><strong>Fecha:</strong> {{ result.created_at }}</p>
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-6">
-      <p><strong>Realizado por:</strong> {{ result.realized_by_name }}</p>
-    </div>
-    <div class="col-6 text-end">
-      <p>
-        <strong>Revisado por:</strong> {{ result.reviewed_by_name if
-        result.reviewed_by_name else "No revisado" }}
-      </p>
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-12">
-      <p><strong>Resultado:</strong> {{ result.result }}</p>
-    </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-12">
-      <h3>Detalles de las Pruebas</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Prueba</th>
-            <th>Resultado</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for test_result in result.tests %}
-          <tr>
-            <td>{{ test_result.test_name }}</td>
-            <td>{{ test_result.result }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-  {% if not result.reviewed_by_name and current_user.role in ["admin", "fisico"]
-  %}
-  <div class="text-center mb-4">
-    <form
-      method="POST"
-      action="{{ url_for('results.review_result', result_uid=result.uid) }}"
-    >
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-      <button type="submit" class="btn btn-primary">
-        Marcar como Revisado
-      </button>
-    </form>
-  </div>
-  {% endif %}
-  <div class="text-center">
-    <a href="{{ url_for('results.view_results') }}" class="btn btn-primary"
-      >Volver a Resultados</a
-    >
-  </div>
-</div>
-{% endblock %}
+   {% extends "main.html" %} {% block content %}
+   <div class="container mt-5">
+     <h2 class="text-center mb-4">Detalles del Resultado</h2>
+     <div class="row mb-4">
+       <div class="col-6">
+         <p><strong>Acelerador Lineal:</strong> {{ result.linac_name }}</p>
+       </div>
+       <div class="col-6 text-end">
+         <p><strong>Fecha:</strong> {{ result.created_at }}</p>
+       </div>
+     </div>
+     <div class="row mb-4">
+       <div class="col-6">
+         <p><strong>Realizado por:</strong> {{ result.realized_by_name }}</p>
+       </div>
+       <div class="col-6 text-end">
+         <p>
+           <strong>Revisado por:</strong> {{ result.reviewed_by_name if
+           result.reviewed_by_name else "No revisado" }}
+         </p>
+       </div>
+     </div>
+     <div class="row mb-4">
+       <div class="col-12">
+         <p><strong>Resultado:</strong> {{ result.result }}</p>
+       </div>
+     </div>
+     <div class="row mb-4">
+       <div class="col-12">
+         <h3>Detalles de las Pruebas</h3>
+         <table class="table table-bordered">
+           <thead>
+             <tr>
+               <th>Prueba</th>
+               <th>Resultado</th>
+             </tr>
+           </thead>
+           <tbody>
+             {% set categories = result.tests|map(attribute='category_name')|unique|sort(reverse=True) %}
+             {% for category in categories %}
+             <tr class="table-secondary">
+               <td colspan="2"><strong>{{ category|capitalize }}</strong></td>
+             </tr>
+             {% for test_result in result.tests|sort(attribute='test_name') %}
+             {% if test_result.category_name == category %}
+             <tr>
+               <td>{{ test_result.test_name }}</td>
+               <td>{{ test_result.result }}</td>
+             </tr>
+             {% endif %}
+             {% endfor %}
+             {% endfor %}
+           </tbody>
+         </table>
+       </div>
+     </div>
+     {% if not result.reviewed_by_name and current_user.role in ["admin", "fisico"]
+     %}
+     <div class="text-center mb-4">
+       <form
+         method="POST"
+         action="{{ url_for('results.review_result', result_uid=result.uid) }}"
+       >
+         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+         <button type="submit" class="btn btn-success">
+           Marcar como Revisado
+         </button>
+       </form>
+     </div>
+     {% endif %}
+     <div class="text-center">
+       <a href="{{ url_for('results.view_results') }}" class="btn btn-primary"
+         >Volver a Resultados</a
+       >
+     </div>
+   </div>
+  <br/>
+   {% endblock %}

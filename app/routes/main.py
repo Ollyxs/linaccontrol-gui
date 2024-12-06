@@ -81,4 +81,6 @@ def login():
 def logout():
     logout_user()
     flash("Sesión cerrada correctamente.", "success")
-    return redirect(url_for("main.login"))
+    response = make_response(redirect(url_for("main.login")))
+    response.delete_cookie("access_token")
+    return response

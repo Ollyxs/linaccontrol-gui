@@ -44,7 +44,7 @@
           {% for linac in linacs %}
           <tr>
             <td>{{ linac.name }}</td>
-            <td>Fuesmen SR{#{ linac.location }#}</td>
+            <td>{{ linac.location }}</td>
             <td>{{ 'Activo' if linac.is_active else 'Inactivo' }}</td>
             <td>
               <a
